@@ -60,6 +60,8 @@ class EpsilonGreedyPolicy(object):
         -------
         int
             The selected action
+
+        GitHub Copilot completions was used to complete this code.
         """
 
         # If evaluation mode, skip exploration entirely
@@ -67,8 +69,12 @@ class EpsilonGreedyPolicy(object):
             return int(np.argmax(Q[state]))
 
         # TODO: Implement epsilon-greedy action selection
+        a = 0
         # With prob 1 - epsilon return the greedy action
+        if self.rng.random() < 1 - self.epsilon:
+            a = int(np.argmax(Q[state]))
         # Wtih prob epsilon, use the policy's RNG to select a random action
-        # Return the selected action -- currently always returns 0
+        else:
+            a = self.rng.choice(self.env.action_space.n)
 
-        return 0
+        return a

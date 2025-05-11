@@ -37,6 +37,8 @@ class SARSAAgent(AbstractAgent):
         ------
         AssertionError
             If `gamma` is not in [0, 1] or if `alpha` is not positive.
+
+
         """
 
         # Check hyperparameter boundaries
@@ -125,12 +127,22 @@ class SARSAAgent(AbstractAgent):
         -------
         float
             The updated Q-value for the (state, action) pair.
+
+        GitHub Copilot completions was used to complete this code.
         """
 
         # SARSA update rule
         # TODO: Implement the SARSA update rule here.
         # Use a value of 0. for terminal states and
-        # update the new Q value in the Q table of this class.
-        # Return the new Q value --currently always returns 0.0
+        Q_next = 0.0
+        if done:
+            Q_next = 0.0
+        else:
+            Q_next = self.Q[next_state][next_action]
 
-        return 0.0
+        # update the new Q value in the Q table of this class.
+        self.Q[state][action] += self.alpha * (
+            reward + self.gamma * Q_next - self.Q[state][action]
+        )
+
+        return self.Q[state][action]
