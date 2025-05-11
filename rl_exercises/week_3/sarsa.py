@@ -6,6 +6,10 @@ from collections import defaultdict
 
 import gymnasium as gym
 import numpy as np
+from prompt_toolkit.key_binding.bindings.named_commands import self_insert
+from requests.packages import target
+from werkzeug.http import quote_header_value
+
 from rl_exercises.agent import AbstractAgent
 from rl_exercises.week_3 import EpsilonGreedyPolicy
 
@@ -133,4 +137,19 @@ class SARSAAgent(AbstractAgent):
         # update the new Q value in the Q table of this class.
         # Return the new Q value --currently always returns 0.0
 
-        return 0.0
+        # If no more states occur (at end of episode), set target to reward because Q[s+1, a+1] is 0.
+        if done:
+            td_target = reward
+
+        # Else compute td_target formular
+        else:
+            td_target = reward + self.gamma * self.Q[next_state][next_action]
+
+        # Compute whole SARSA update
+        q_val = self.Q[state][action] + self.alpha * (td_target - self.Q[state][action])
+
+        # Update the Q value in the Q table
+        self.Q[state][action] = q_val
+
+        # Return the new Q value
+        return q_val
